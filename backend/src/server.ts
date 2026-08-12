@@ -15,11 +15,13 @@ app.get("/", (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 8001;
+const PORT = Number(process.env.PORT) || 8001;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 125000;
 
 
 

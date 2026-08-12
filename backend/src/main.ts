@@ -41,7 +41,12 @@ async function bootstrap() {
   );
 
   const port = process.env.PORT || 8001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
+
+  const server = app.getHttpServer();
+  server.keepAliveTimeout = 120000;
+  server.headersTimeout = 125000;
+
   console.log(`Application is running on: http://localhost:${port}/api`);
 }
 bootstrap();
