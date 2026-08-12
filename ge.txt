@@ -1,27 +1,6 @@
-# ─── APPLICATION ENVIRONMENT CONFIGURATION ──────────────────────────────────────
 
-# The environment mode (development or production)
-NODE_ENV=production
+DATABASE_URL="postgresql://neondb_owner:npg_sFoDTBjvJ3g2@ep-small-star-azpadpmu-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+JWT_SECRET="9e9c3c1e5cb37713eb22bfad65961a8ef1a44eef7f0175b9f76a5c2f347ef3e3"
 
-# The port the backend will bind to in production (Render handles this dynamically, but 3000 matches EXPOSE)
-PORT=3000
 
-# ─── DATABASE CONFIGURATION (NEON POSTGRESQL) ───────────────────────────────────
-
-# Prisma connection string (Pooled connection string is recommended for serverless)
-DATABASE_URL="postgresql://username:password@ep-neon-host-name.region.aws.neon.tech/dbname?sslmode=require"
-
-# TypeORM connection credentials (parsed from your Neon connection string)
-DB_HOST="ep-neon-host-name.region.aws.neon.tech"
-DB_PORT=5432
-DB_USERNAME="username"
-DB_PASSWORD="password"
-DB_DATABASE="dbname"
-
-# ─── JWT AUTHENTICATION ────────────────────────────────────────────────────────
-
-# A strong, unique, randomly generated secret key for signing authentication tokens
-JWT_SECRET="YOUR_SECURE_LONG_RANDOM_STRING_HERE"
-
-# Duration for which token remains valid
 JWT_EXPIRATION="1d"
