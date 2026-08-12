@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model challan_items {
+  id        String   @id(map: "PK_e3e1674fe6a9f504564f61a59f1") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  challanId String   @db.Uuid
+  productId String   @db.Uuid
+  quantity  Int
+  unitPrice Decimal  @db.Decimal(10, 2)
+  products  products @relation(fields: [productId], references: [id], onUpdate: NoAction, map: "FK_23dfe074e8e78563b370b7d8589")
+  challans  challans @relation(fields: [challanId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_f3bcc481cc656d450bd81285972")
+}
+
+model challans {
+  id            String          @id(map: "PK_d3e25240ed92e82c17441506099") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  challanNumber String          @unique(map: "UQ_ebd17f8ef147d13e6963fc1c733") @db.VarChar
+  customerId    String          @db.Uuid
+  salesUserId   String          @db.Uuid
+  status        String          @default("draft") @db.VarChar
+  deliveryDate  DateTime?       @db.Timestamp(6)
+  notes         String?
+  totalAmount   Decimal         @default(0) @db.Decimal(12, 2)
+  createdAt     DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime        @default(now()) @db.Timestamp(6)
+  challan_items challan_items[]
+  customers     customers       @relation(fields: [customerId], references: [id], onUpdate: NoAction, map: "FK_48b1a2e75643f48e6a4617e57d1")
+  users         users           @relation(fields: [salesUserId], references: [id], onUpdate: NoAction, map: "FK_5e2355efae99be4a4253f030f3c")
+}
+
+model customers {
+  id              String     @id(map: "PK_133ec679a801fab5e070f73d3ea") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name            String     @db.VarChar
+  companyName     String     @db.VarChar
+  email           String     @db.VarChar
+  phone           String     @db.VarChar
+  address         String
+  balance         Decimal    @default(0) @db.Decimal(12, 2)
+  assignedSalesId String?    @db.Uuid
+  createdAt       DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime   @default(now()) @db.Timestamp(6)
+  mobile          String?    @db.VarChar
+  gstNumber       String?    @db.VarChar
+  customerType    String     @default("Retail") @db.VarChar
+  status          String     @default("Lead") @db.VarChar
+  followUpDate    DateTime?  @db.Date
+  notes           String?
+  challans        challans[]
+  users           users?     @relation(fields: [assignedSalesId], references: [id], onUpdate: NoAction, map: "FK_ebd01ad57c49338f2fac5f0a376")
+}
+
+model products {
+  id              String            @id(map: "PK_0806c755e0aca124e67c0cf6d7d") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name            String            @db.VarChar
+  sku             String            @unique(map: "UQ_c44ac33a05b144dd0d9ddcf9327") @db.VarChar
+  description     String?
+  price           Decimal           @default(0) @db.Decimal(10, 2)
+  cost            Decimal           @default(0) @db.Decimal(10, 2)
+  stockQuantity   Int               @default(0)
+  createdAt       DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime          @default(now()) @db.Timestamp(6)
+  category        String?           @db.VarChar
+  minimumStock    Int               @default(0)
+  location        String?           @db.VarChar
+  challan_items   challan_items[]
+  stock_movements stock_movements[]
+}
+
+model stock_movements {
+  id        String   @id(map: "PK_57a26b190618550d8e65fb860e7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  productId String   @db.Uuid
+  quantity  Int
+  type      String   @default("IN") @db.VarChar
+  reference String   @db.VarChar
+  userId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  users     users?   @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_4fc9f6fc2db22fc301f7c1c918b")
+  products  products @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_a3acb59db67e977be45e382fc56")
+}
+
+model users {
+  id              String            @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username        String            @unique(map: "UQ_fe0bb3f6520ee0469504521e710") @db.VarChar
+  password        String            @db.VarChar
+  name            String            @db.VarChar
+  role            String            @default("sales") @db.VarChar
+  createdAt       DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime          @default(now()) @db.Timestamp(6)
+  challans        challans[]
+  customers       customers[]
+  stock_movements stock_movements[]
+}

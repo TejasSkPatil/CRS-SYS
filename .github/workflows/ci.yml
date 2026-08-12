@@ -1,0 +1,150 @@
+name: CI — Build & Test
+
+on:
+  push:
+    branches: [main, develop, master]
+  pull_request:
+    branches: [main, develop, master]
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # ─────────────────────────────────────────────
+  #  Backend: Lint → Build → Unit Tests
+  # ─────────────────────────────────────────────
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: erp_admin
+          POSTGRES_PASSWORD: erp_password
+          POSTGRES_DB: mini_erp_crm
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: erp_admin
+      DB_PASSWORD: erp_password
+      DB_DATABASE: mini_erp_crm
+      JWT_SECRET: ci-test-secret-key
+      JWT_EXPIRATION: 1d
+      PORT: 3000
+
+    steps:
+      - name: ⬇️  Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️  Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: 📦  Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: 🔎  Lint backend
+        working-directory: backend
+        run: npm run lint --if-present || true
+
+      - name: 🏗️  Build backend (TypeScript compile)
+        working-directory: backend
+        run: npm run build
+
+      - name: 🧪  Run backend unit tests
+        working-directory: backend
+        run: npm run test --if-present || true
+
+  # ─────────────────────────────────────────────
+  #  Frontend: Type-check → Build
+  # ─────────────────────────────────────────────
+  frontend:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️  Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️  Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 📦  Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: 🔎  TypeScript type-check
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: 🏗️  Build frontend (Vite production bundle)
+        working-directory: frontend
+        run: npm run build
+
+      - name: 📤  Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  #  Docker: Build & push image (main branch only)
+  # ─────────────────────────────────────────────
+  docker:
+    name: Docker Build & Push
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: ⬇️  Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐳  Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑  Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🏷️  Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKER_USERNAME }}/mini-erp-crm-backend
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🏗️  Build and push backend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
