@@ -217,3 +217,4 @@ Modern IT companies — whether software houses, system integrators, or managed-
 - **Audit & Compliance Readiness**: The immutable stock movement and billing ledger gives IT finance teams a reliable trail for internal audits, tax filing, and client dispute resolution.
 
 LETS THANKS FRO WROK TOGETHER..THANK U..
+WE WILL FURTHER WORK ON IT LATER 
