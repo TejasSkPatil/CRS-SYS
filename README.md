@@ -148,3 +148,55 @@ stateDiagram-v2
 
 ## 📡 API Testing
 You can import the `postman_collection.json` file in root directly into **Postman** to test and verify all the authentication, user, client, product, challan, and stock management endpoints.
+ 
+
+
+---
+
+## 🧭 Project Overview
+
+**Aether CRM & ERP** is a full-stack, enterprise-grade business management platform built to streamline sales, inventory, and accounting operations under a single unified interface.
+
+It is designed for small-to-mid-sized businesses that need tight control over their product catalog, customer relationships, delivery order lifecycle, and stock ledger — all behind a role-restricted access model that ensures every team member sees only what they need.
+
+The system combines a **NestJS** backend (with TypeORM for schema management and Prisma 7 for high-performance querying) with a **React + Vite** frontend that delivers a stunning glassmorphism dark-mode UI with real-time micro-animations and smooth navigational flows.
+
+---
+
+## ✨ Key Features
+
+### 🔐 Authentication & Role-Based Access Control
+- JWT-secured login system with refresh-safe token handling.
+- Four built-in roles — **Admin, Sales, Warehouse, Accounts** — each with scoped permissions.
+- Route guards on both frontend and backend to prevent unauthorized access or actions.
+
+### 👤 Customer Relationship Management (CRM)
+- Maintain a full customer directory with contact details and account metadata.
+- Track each customer's outstanding balance ledger updated automatically on invoicing.
+- Sales agents can create and manage their assigned customer accounts independently.
+
+### 📦 Product Catalog & Inventory
+- Manage a centralized product catalog with pricing, unit, and stock quantity tracking.
+- Warehouse team can record incoming stock (IN movements) with timestamped logs.
+- Stock levels are automatically adjusted on challan dispatch and cancellation events.
+
+### 🧾 Delivery Challan Lifecycle Management
+- End-to-end challan flow: **Draft → Delivered → Invoiced → (Cancelled)**.
+- Each state transition is atomic — stock movements and balance changes are committed together or not at all, preventing data inconsistency.
+- Cancellation of any post-draft state triggers full automatic reversal of stock and ledger entries.
+
+### 📊 Stock Movement Ledger
+- Every stock change (inbound or outbound) is logged as an immutable ledger entry.
+- Provides full traceability: who moved stock, when, how much, and linked to which challan.
+- Warehouse staff have a dedicated view for stock log history and inventory health.
+
+### 🛡️ Admin Control Panel
+- Admins can create and manage user accounts across all roles.
+- Full visibility across customers, products, challans, and stock movements.
+- System seeds default demo users, customers, and products automatically on first run.
+
+### 🌐 Developer-Friendly Architecture
+- Dual-server support: NestJS for production, Express auxiliary server for rapid testing.
+- Prisma-generated type-safe client for zero-drift database access.
+- Postman collection included for instant API exploration and end-to-end testing.
+- Docker Compose configuration for one-command local PostgreSQL setup.
