@@ -215,3 +215,5 @@ Modern IT companies — whether software houses, system integrators, or managed-
 - **Service Delivery Orders**: The Challan lifecycle maps naturally to IT service delivery — raise a work order (Draft), execute and dispatch (Delivered), then bill the client (Invoiced) with full audit trails.
 - **Team Role Segregation**: IT orgs can grant Sales, Delivery/Operations, and Finance teams precisely scoped access — preventing accidental or unauthorized changes across departments.
 - **Audit & Compliance Readiness**: The immutable stock movement and billing ledger gives IT finance teams a reliable trail for internal audits, tax filing, and client dispute resolution.
+
+LETS THANKS FRO WROK TOGETHER..THANK U..
