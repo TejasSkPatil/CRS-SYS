@@ -200,3 +200,18 @@ The system combines a **NestJS** backend (with TypeORM for schema management and
 - Prisma-generated type-safe client for zero-drift database access.
 - Postman collection included for instant API exploration and end-to-end testing.
 - Docker Compose configuration for one-command local PostgreSQL setup.
+
+
+---
+
+## 💼 Need & Application in the IT Sector
+
+Modern IT companies — whether software houses, system integrators, or managed-service providers — juggle a complex web of client accounts, hardware/software procurement, service delivery orders, and vendor billing cycles. Without a unified system, teams end up working across disconnected spreadsheets, email threads, and siloed tools, leading to missed invoices, stock discrepancies, and poor client visibility.
+
+**Aether CRM & ERP directly addresses these IT-sector challenges:**
+
+- **Client & Account Management**: IT firms can maintain a structured client directory, track service agreements, and monitor outstanding balances per account — replacing error-prone manual records.
+- **Procurement & Inventory Control**: Hardware resellers and system integrators can track component stock (servers, networking gear, licenses) with automatic ledger updates on every procurement or dispatch event.
+- **Service Delivery Orders**: The Challan lifecycle maps naturally to IT service delivery — raise a work order (Draft), execute and dispatch (Delivered), then bill the client (Invoiced) with full audit trails.
+- **Team Role Segregation**: IT orgs can grant Sales, Delivery/Operations, and Finance teams precisely scoped access — preventing accidental or unauthorized changes across departments.
+- **Audit & Compliance Readiness**: The immutable stock movement and billing ledger gives IT finance teams a reliable trail for internal audits, tax filing, and client dispute resolution.
